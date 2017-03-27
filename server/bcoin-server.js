@@ -32,12 +32,12 @@ node.pool.on('open', () => {
 
 if (node instanceof FullNode) {
   node.mempool.on('tx', (tx) => {
-    // console.log('******** Saw tx: ', tx);
+    console.log('******** Saw tx: ', tx);
   });
 }
 
 node.chain.on('block', () => {
-  // console.log('new block found. Chain State tx: ', node.chain.tip);
+  console.log('new block found. Chain State tx: ', node.chain.tip);
 });
 
 node.open()

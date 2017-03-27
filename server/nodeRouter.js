@@ -4,12 +4,13 @@ const express = require('express');
 const request = require('request');
 const auth = require('basic-auth');
 const API_KEY = require('../setup/setupUtils').getConfig().apiKey;
+const db = require('./dbUtils.js'); 
 
 process.env.BCOIN_CONFIG = process.env.npm_config_config;
 // require('request').debug = true;
 
 const nodeRouter = express.Router({ mergeParams: true });
-const bcoinPort = 8080;
+const bcoinPort = 18556;
 const baseRequest = request.defaults({
   baseUrl: 'http://localhost:'.concat(bcoinPort),
 });
@@ -43,12 +44,21 @@ nodeRouter.use((req, res) => {
     qs: req.query,
     auth: authorization,
   };
+
   baseRequest(options, (err, resp, body) => {
     if (err) {
       return res.status(400).send({ error: err });
     }
 
-    return res.status(200).json(body);
+    db.saveWallet(body, function(error, results){
+      if(error){
+        console.log(error)
+      } else {
+        console.log('resultsSAVED WALLET', results);
+        return res.status(200).json(body);
+      }
+    })
+    
   });
 });
 
