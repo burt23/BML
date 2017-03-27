@@ -93,7 +93,8 @@ class App extends React.Component{
           userWantsLogin: false,
           userWantsHome: true,
           userWantsMoreInfo: false,
-          userWantsSignup: false
+          userWantsSignup: false,
+          user: user
         }, context.getWallet)
       },
 
@@ -136,25 +137,25 @@ class App extends React.Component{
 
   getWallet(){
     const context = this;
-    console.log('inside get wallet')
+    console.log('inside get wallet',this.state.user)
 
       $.ajax({
       url: 'http://localhost:5000/node/wallet/' + this.state.user,
-      type: 'POST',
+      type: 'GET',
       contentType: 'application/json',
       data: JSON.stringify({
         user_id: this.state.user_id,
       }),
       success: function(data){
         console.log('success from signupAJAx', data);
-        console.log('dataa', data.account.receiveAddress);
+        // console.log('dataa', data.account.receiveAddress);
         context.setState({
           user_id: data.user_id,
           userWantsLogin: false,
           userWantsHome: true,
           userWantsSignup: false,
           userWantsMoreInfo: false,
-          balance: data.state.coin,
+          balance: data.state.unconfirmed,
           address: data.account.receiveAddress
         })
 
@@ -185,7 +186,7 @@ class App extends React.Component{
         console.log('made walletAJAXCOIN', data.state.coin)
         context.setState({
           address: data.account.receiveAddress,
-          balance: data.state.coin
+          balance: data.state.unconfirmed
         })
       },
       error: function(error){
